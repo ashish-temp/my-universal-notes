@@ -1,17 +1,28 @@
-// src/App.jsx
 import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import Auth from "./components/Auth.jsx";
-import Notes from "./components/Notes.jsx";
+
+import Notes from "./components/Notes";
+import Auth from "./components/Auth";
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 🌙 theme
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "light"
+  );
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  // 🔐 auth listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
       setLoading(false);
     });
 
@@ -19,25 +30,64 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div className="center-screen">Loading...</div>;
-  }
-
-  if (!user) {
-    return <Auth />;
+    return (
+      <div className="center-screen">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>My Universal Notes</h1>
-        <div className="user-info">
-          <span className="user-email">{user.email}</span>
-          <button className="secondary-btn" onClick={() => signOut(auth)}>
-            Logout
-          </button>
+
+        {/* RIGHT SIDE */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: "0.4rem",
+          }}
+        >
+          {/* ✅ USER EMAIL */}
+          {user && (
+            <span
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--muted)",
+              }}
+            >
+              {user.email}
+            </span>
+          )}
+
+          {/* BUTTONS */}
+          <div style={{ display: "flex", gap: "0.6rem" }}>
+            <button
+              className="secondary-btn"
+              onClick={() =>
+                setTheme(theme === "light" ? "dark" : "light")
+              }
+            >
+              {theme === "light" ? "🌙 Dark" : "☀ Light"}
+            </button>
+
+            {user && (
+              <button
+                className="secondary-btn"
+                onClick={() => auth.signOut()}
+              >
+                Logout
+              </button>
+            )}
+          </div>
         </div>
       </header>
-      <Notes user={user} />
+
+      {/* 🔁 CONDITIONAL RENDER */}
+      {user ? <Notes user={user} /> : <Auth />}
     </div>
   );
 }
