@@ -10,6 +10,7 @@ import {
   query,
   serverTimestamp,
   where,
+  updateDoc,
 } from "firebase/firestore";
 
 export default function Notes({ user }) {
@@ -18,6 +19,9 @@ export default function Notes({ user }) {
   const [notes, setNotes] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+
 
   // delete confirmation modal
   const [confirmNote, setConfirmNote] = useState(null);
@@ -42,32 +46,52 @@ export default function Notes({ user }) {
 
   // ✅ ADD NOTE WITH TITLE + TEXT
   const handleAddNote = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!title.trim() || !text.trim()) {
-      setError("Both title and note are required.");
-      return;
-    }
+  if (!title.trim() || !text.trim()) {
+    setError("Both title and note are required.");
+    return;
+  }
 
-    setSaving(true);
-    try {
+  setSaving(true);
+  try {
+    if (isEditing && editingNoteId) {
+      // ✅ UPDATE NOTE
+      await updateDoc(doc(db, "notes", editingNoteId), {
+        title: title.trim(),
+        text: text.trim(),
+      });
+
+      setIsEditing(false);
+      setEditingNoteId(null);
+    } else {
+      // ✅ ADD NEW NOTE
       await addDoc(collection(db, "notes"), {
         title: title.trim(),
         text: text.trim(),
         uid: user.uid,
         createdAt: serverTimestamp(),
       });
-
-      setTitle("");
-      setText("");
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    } finally {
-      setSaving(false);
     }
-  };
+
+    setTitle("");
+    setText("");
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  } finally {
+    setSaving(false);
+  }
+};
+
+const handleEditNote = (note) => {
+  setTitle(note.title);
+  setText(note.text);
+  setEditingNoteId(note.id);
+  setIsEditing(true);
+};
+
 
   // ✅ OPEN DELETE CONFIRM UI
   const openConfirm = (note) => {
@@ -120,8 +144,28 @@ export default function Notes({ user }) {
           />
 
           <button type="submit" className="primary-btn" disabled={saving}>
-            {saving ? "Saving..." : "Add note"}
-          </button>
+  {saving
+    ? "Saving..."
+    : isEditing
+    ? "Update note"
+    : "Add note"}
+</button>
+
+{isEditing && (
+  <button
+    type="button"
+    className="secondary-btn"
+    onClick={() => {
+      setIsEditing(false);
+      setEditingNoteId(null);
+      setTitle("");
+      setText("");
+    }}
+  >
+    Cancel edit
+  </button>
+)}
+
 
           {error && (
             <p style={{ color: "#b91c1c", fontSize: "0.85rem" }}>{error}</p>
@@ -136,12 +180,32 @@ export default function Notes({ user }) {
               <div key={note.id} className="note-card">
                 <h4 style={{ fontWeight: "600" }}>{note.title}</h4>
                 <p className="note-text">{note.text}</p>
-                <button
-                  className="delete-btn"
-                  onClick={() => openConfirm(note)}
-                >
-                  Delete
-                </button>
+                <div
+  style={{
+    display: "flex",
+    gap: "0.5rem",
+    alignItems: "center",
+  }}
+>
+
+  <button
+  className="secondary-btn"
+  style={{ height: "32px" }}
+  onClick={() => handleEditNote(note)}
+>
+  Edit
+</button>
+
+<button
+  className="delete-btn"
+  style={{ height: "32px" }}
+  onClick={() => openConfirm(note)}
+>
+  Delete
+</button>
+
+</div>
+
               </div>
             ))
           )}
