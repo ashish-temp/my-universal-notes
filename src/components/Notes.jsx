@@ -26,7 +26,7 @@ export default function Notes({ user }) {
   // delete confirmation modal
   const [confirmNote, setConfirmNote] = useState(null);
   const [confirmInput, setConfirmInput] = useState("");
-
+const [copiedNoteId, setCopiedNoteId] = useState(null);
   useEffect(() => {
     const q = query(collection(db, "notes"), where("uid", "==", user.uid));
 
@@ -119,6 +119,27 @@ const handleEditNote = (note) => {
 
   const deleteDisabled = confirmInput !== "DELETE";
 
+  
+
+
+
+
+const handleCopyNote = async (note) => {
+  try {
+    await navigator.clipboard.writeText(note.text);
+    setCopiedNoteId(note.id);
+
+    setTimeout(() => {
+      setCopiedNoteId(null);
+    }, 1500);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+
+
   return (
     <>
       <main className="notes-main">
@@ -178,33 +199,81 @@ const handleEditNote = (note) => {
           ) : (
             notes.map((note) => (
               <div key={note.id} className="note-card">
-                <h4 style={{ fontWeight: "600" }}>{note.title}</h4>
-                <p className="note-text">{note.text}</p>
+    <div className="note-header">
+  <h4>{note.title}</h4>
+
+  <button
+    className={`copy-pill ${
+      copiedNoteId === note.id ? "copied" : ""
+    }`}
+    onClick={() => handleCopyNote(note)}
+  >
+    {copiedNoteId === note.id ? (
+      <>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        Copied
+      </>
+    ) : (
+      <>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+        Copy
+      </>
+    )}
+  </button>
+</div>
+
+
+<p className="note-text">{note.text}</p>
+
+
                 <div
   style={{
     display: "flex",
-    gap: "0.5rem",
+    gap: "0.4rem",
     alignItems: "center",
+    justifyContent: "flex-end",
   }}
 >
+  
 
   <button
-  className="secondary-btn"
-  style={{ height: "32px" }}
-  onClick={() => handleEditNote(note)}
->
-  Edit
-</button>
+    className="secondary-btn"
+    onClick={() => handleEditNote(note)}
+  >
+    Edit
+  </button>
 
-<button
-  className="delete-btn"
-  style={{ height: "32px" }}
-  onClick={() => openConfirm(note)}
->
-  Delete
-</button>
-
+  <button
+    className="delete-btn"
+    onClick={() => openConfirm(note)}
+  >
+    Delete
+  </button>
 </div>
+
 
               </div>
             ))
