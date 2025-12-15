@@ -175,15 +175,6 @@ body {
   align-items: center;
 }
 
-.modal-card {
-  position: relative;
-  border-radius: 1rem;
-  padding: 1.6rem;
-  width: 100%;
-  max-width: 420px;
-  color: var(--text);
-  animation: scaleIn 0.15s ease;
-}
 
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.96); }
@@ -210,10 +201,19 @@ body {
 .modal-textarea {
   margin-top: 0.6rem;
   resize: none;
-  overflow: hidden; /* ✅ no scrollbar */
+
   min-height: 120px;
+  max-height: 40vh;        /* 🔑 allows long notes */
+  overflow-y: auto;        /* 🔑 SCROLLS PROPERLY */
+  
+
   font-size: 0.95rem;
+  line-height: 1.5;
+
+  background: transparent;
+  color: inherit;
 }
+
 
 /* =====================
    COLOR PICKER (FIXED)
@@ -289,10 +289,7 @@ body {
   border-radius: 999px;
   padding: 0.45rem 1rem;
 }
-/* 🔥 Force readable text inside colored modal */
-.modal-card[style*="background"] {
-  color: #111827;
-}
+
 
 [data-theme="dark"] .modal-card[style*="background"] {
   color: #020617;
@@ -375,3 +372,24 @@ body {
 .note-form textarea::placeholder {
   color: var(--muted);
 }
+
+
+
+.modal-card {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.6rem;
+  width: 100%;
+  max-width: 420px;
+
+  max-height: 80vh;          
+  overflow-y: auto;          
+
+  background: var(--card);
+  color: var(--text);
+
+  animation: scaleIn .15s ease;
+}
+
+
+

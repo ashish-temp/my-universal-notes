@@ -22,6 +22,14 @@ export default function EditNoteModal({ note, onClose }) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+  document.body.style.overflow = "hidden";
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, []);
+
+
+  useEffect(() => {
     if (note) {
       setTitle(note.title || "");
       setText(note.text || "");
@@ -35,14 +43,18 @@ export default function EditNoteModal({ note, onClose }) {
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleClose = async () => {
-    await updateDoc(doc(db, "notes", note.id), {
-      title,
-      text,
-      color,
-    });
-    onClose();
-  };
+  const handleClose = () => {
+  // close UI instantly
+  onClose();
+
+  // save in background (no await)
+  updateDoc(doc(db, "notes", note.id), {
+    title,
+    text,
+    color,
+  });
+};
+
 
   const handleDelete = async () => {
     await deleteDoc(doc(db, "notes", note.id));
