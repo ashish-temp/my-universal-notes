@@ -3,16 +3,19 @@ import { db } from "../firebase";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const COLORS = [
-  "#2DAD49",
-  "#faafa8",
-  "#f39f76",
-  "#fff8b8",
-  "#e2f6d3",
-  "#b4ddd3",
-  "#d4e4ed",
-  "#aeccdc",
-  "#d3bfdb",
-  "#f6e2dd",
+  "#0c625d",
+  "#FBBC04",
+  "#77172e",
+  "#CCFF90",
+  "#A7FFEB",
+  "#CBF0F8",
+  "#AECBFA",
+  "#D7AEFB",
+  "#FDCFE8",
+  "#E6C9A8",
+  "#E8EAED",
+  // Include a 'default' or white color if needed by your logic
+  "#FFFFFF",
 ];
 
 export default function EditNoteModal({ note, onClose }) {

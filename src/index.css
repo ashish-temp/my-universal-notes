@@ -276,6 +276,8 @@ body {
 .modal-input {
   font-size: 1rem;
   font-weight: 600;
+  /* Add padding to account for the moved color palette */
+  padding-top: 2.5rem; 
 }
 
 .modal-textarea {
@@ -295,12 +297,18 @@ body {
 
 
 /* =====================
-    COLOR PICKER
+    COLOR PICKER (UPDATED POSITION)
 ===================== */
 .color-row {
   display: flex;
   gap: 0.45rem;
-  margin: 0.6rem 0;
+  /* REMOVED: margin: 0.6rem 0; */
+  
+  /* NEW POSITIONING */
+  position: absolute;
+  top: 1.2rem; /* Aligned with modal's top padding */
+  left: 1.6rem; /* Aligned with modal's left padding */
+  z-index: 10; /* Ensure it's above the note content */
 }
 
 .color-dot {
