@@ -1,5 +1,5 @@
 /* =====================
-   THEME VARIABLES
+    THEME VARIABLES
 ===================== */
 :root {
   --bg: #f8fafc;
@@ -28,7 +28,7 @@
 
 
 /* =====================
-   GLOBAL
+    GLOBAL
 ===================== */
 * {
   box-sizing: border-box;
@@ -42,8 +42,48 @@ body {
   color: var(--text);
 }
 
+
 /* =====================
-   LAYOUT
+    SCROLLBAR CUSTOMIZATION (Modern Look)
+===================== */
+
+/* Base style for the scrollbar track (the background) */
+.modal-card::-webkit-scrollbar,
+.modal-textarea::-webkit-scrollbar {
+  width: 8px; /* Width for vertical scrollbars */
+  height: 8px; /* Height for horizontal scrollbars (if any) */
+}
+
+/* Scrollbar Track */
+.modal-card::-webkit-scrollbar-track,
+.modal-textarea::-webkit-scrollbar-track {
+  background: transparent; /* Makes the track less prominent */
+}
+
+/* Scrollbar Handle (the draggable part) */
+.modal-card::-webkit-scrollbar-thumb,
+.modal-textarea::-webkit-scrollbar-thumb {
+  background-color: var(--muted); /* Use muted color for a professional look */
+  border-radius: 4px; /* Rounded corners */
+  border: 2px solid transparent; /* Transparent border for padding effect */
+  background-clip: padding-box; /* Ensures background-color only fills the thumb content area */
+}
+
+/* Change color on hover for better UX */
+.modal-card::-webkit-scrollbar-thumb:hover,
+.modal-textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #9aa0a6; 
+}
+
+/* Dark theme specific hover color */
+[data-theme="dark"] .modal-card::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] .modal-textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #b0b4b8; 
+}
+
+
+/* =====================
+    LAYOUT
 ===================== */
 .app-container {
   min-height: 100vh;
@@ -64,31 +104,53 @@ body {
 }
 
 /* =====================
-   CREATE NOTE
+    CREATE NOTE
 ===================== */
 .note-form {
   background: var(--card);
   border-radius: 1rem;
-  padding: 1.4rem;              /* ⬅ more breathing space */
+  padding: 1.4rem;             /* ⬅ more breathing space */
   box-shadow: 0 14px 40px rgba(0,0,0,0.12);
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;                  /* ⬅ space between title & textarea */
+  gap: 0.9rem;                 /* ⬅ space between title & textarea */
   margin-bottom: 1.5rem;
+  cursor: text;
 }
 
+/* CREATE NOTE - TITLE INPUT */
+.note-form input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  padding: 0.4rem 0;           /* ⬅ space above & below text */
+}
 
 .note-form textarea {
   resize: none;
-  border-radius: 0.8rem;
-  border: 1px solid var(--border);
-  padding: 0.75rem;
+  border: none; 
+  outline: none;
+
+  padding: 0.6rem 0;           /* ⬅ more vertical space */
+  font-size: 0.95rem;
+  line-height: 1.5;
+
   background: transparent;
   color: var(--text);
 }
 
+/* Placeholder style */
+.note-form input::placeholder,
+.note-form textarea::placeholder {
+  color: var(--muted);
+}
+
+
 /* =====================
-   NOTES GRID (IMPORTANT)
+    NOTES GRID (IMPORTANT)
 ===================== */
 .notes-grid {
   display: grid;
@@ -98,7 +160,7 @@ body {
 }
 
 /* =====================
-   NOTE CARD
+    NOTE CARD
 ===================== */
 .note-card {
   border-radius: 0.9rem;
@@ -111,6 +173,8 @@ body {
   align-self: start;
 
   transition: box-shadow 0.2s ease, transform 0.15s ease;
+  
+  color: var(--text); 
 }
 
 .note-card:active {
@@ -131,7 +195,7 @@ body {
 }
 
 /* =====================
-   PIN BUTTON
+    PIN BUTTON
 ===================== */
 .pin-btn {
   border: none;
@@ -154,7 +218,7 @@ body {
 }
 
 /* =====================
-   SECTION LABELS
+    SECTION LABELS
 ===================== */
 .section-label {
   margin: 1.2rem 0 0.4rem;
@@ -164,7 +228,7 @@ body {
 }
 
 /* =====================
-   MODAL
+    MODAL
 ===================== */
 .modal-backdrop {
   position: fixed;
@@ -175,6 +239,22 @@ body {
   align-items: center;
 }
 
+.modal-card {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1.6rem;
+  width: 100%;
+  max-width: 420px;
+
+  max-height: 80vh;          
+  overflow-y: auto;          
+
+  background: var(--card);
+  color: var(--text); 
+
+  animation: scaleIn .15s ease;
+}
+
 
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.96); }
@@ -182,7 +262,7 @@ body {
 }
 
 /* =====================
-   MODAL INPUTS
+    MODAL INPUTS
 ===================== */
 .modal-input,
 .modal-textarea {
@@ -203,20 +283,19 @@ body {
   resize: none;
 
   min-height: 120px;
-  max-height: 40vh;        /* 🔑 allows long notes */
-  overflow-y: auto;        /* 🔑 SCROLLS PROPERLY */
+  max-height: 40vh;         /* 🔑 allows long notes */
+  overflow-y: auto;         /* 🔑 SCROLLS PROPERLY */
   
+  /* IMPORTANT: Add padding to the right to prevent text from touching the scrollbar */
+  padding-right: 15px; 
 
   font-size: 0.95rem;
   line-height: 1.5;
-
-  background: transparent;
-  color: inherit;
 }
 
 
 /* =====================
-   COLOR PICKER (FIXED)
+    COLOR PICKER
 ===================== */
 .color-row {
   display: flex;
@@ -237,7 +316,7 @@ body {
 }
 
 /* =====================
-   COPY BUTTON (MODAL)
+    COPY BUTTON (MODAL)
 ===================== */
 .modal-copy-btn {
   position: absolute;
@@ -264,7 +343,7 @@ body {
 }
 
 /* =====================
-   ACTION BUTTONS
+    ACTION BUTTONS
 ===================== */
 .modal-actions {
   display: flex;
@@ -291,105 +370,35 @@ body {
 }
 
 
-[data-theme="dark"] .modal-card[style*="background"] {
-  color: #020617;
-}
-
-.modal-card input,
-.modal-card textarea {
-  color: inherit !important;
-}
 /* =========================
-   COLOR CONTRAST FIXES
+    COLOR CONTRAST FIXES
 ========================= */
 
-/* Dashboard cards: ensure text readable */
-.note-card {
-  color: var(--text);
-}
-
+/* NOTE CARD: Ensure text readable */
 .note-card[style*="background"] {
-  color: #111827;
+  color: #111827; /* Light backgrounds get dark text */
 }
 
+/* Dark theme specific override for note cards with light backgrounds */
 [data-theme="dark"] .note-card[style*="background"] {
-  color: #020617;
+  color: #020617; /* Very dark text for contrast on light background in dark theme */
 }
 
-/* Modal text must inherit correct contrast */
-.modal-card {
-  color: var(--text);
+
+/* MODAL CARD: Text color fixes */
+
+/* Fix for all custom background colors (like lilac) */
+.modal-card[style*="background"] { 
+  color: #111827 !important; /* Forces dark text for contrast on light background */
 }
 
+/* Dark theme override for modal cards with light backgrounds (more specific to color code) */
+[data-theme="dark"] .modal-card[style*="background:#"] {
+  color: #020617 !important; 
+}
+
+/* Ensure all modal inputs/textareas inherit the correct contrast color */
 .modal-card input,
 .modal-card textarea {
-  color: inherit !important;
+  color: inherit !important; 
 }
-
-/* Light background → dark text */
-.modal-card[style*="background:#"] {
-  color: #111827;
-}
-
-/* Dark theme override */
-[data-theme="dark"] .modal-card[style*="background:#"] {
-  color: #020617;
-}
-/* CREATE NOTE - TITLE INPUT */
-.note-form input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-
-  padding: 0.4rem 0;            /* ⬅ space above & below text */
-}
-
-
-/* Placeholder style */
-.note-form input::placeholder {
-  color: var(--muted);
-}
-.note-form textarea {
-  resize: none;
-  border: none;
-  outline: none;
-
-  padding: 0.6rem 0;            /* ⬅ more vertical space */
-  font-size: 0.95rem;
-  line-height: 1.5;
-
-  background: transparent;
-  color: var(--text);
-}
-
-.note-form {
-  cursor: text;
-}
-.note-form input::placeholder,
-.note-form textarea::placeholder {
-  color: var(--muted);
-}
-
-
-
-.modal-card {
-  position: relative;
-  border-radius: 1rem;
-  padding: 1.6rem;
-  width: 100%;
-  max-width: 420px;
-
-  max-height: 80vh;          
-  overflow-y: auto;          
-
-  background: var(--card);
-  color: var(--text);
-
-  animation: scaleIn .15s ease;
-}
-
-
-
