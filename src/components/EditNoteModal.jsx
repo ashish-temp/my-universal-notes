@@ -13,7 +13,7 @@ const COLORS = [
   "#D7AEFB",
   "#FDCFE8",
   "#E6C9A8",
-  "#E8EAED",
+  "#8fa9cfff",
   // Include a 'default' or white color if needed by your logic
   "#FFFFFF",
 ];
